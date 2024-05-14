@@ -1,6 +1,6 @@
 const homeMenuLinks = [{
     label: 'Schedule Meeting',
-    onclick: 'joinMeeting',
+    onclick: 'isScheduleMeeting',
 },
 {
     label: 'Join Via Link',
