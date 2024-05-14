@@ -47,7 +47,37 @@ const Hero = () => {
 
   const meetingLink = `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${callDetails?.id}`;
 
-  const { createMeeting } = useStartMeetings();
+  const createMeeting = async () => {
+    if (!client || !user) return;
+
+    try {
+      if (!values.dateTime) {
+        return;
+      }
+      const id = crypto.randomUUID();
+      const call = client.call("default", id);
+      if (!call) throw new Error("Failed to create meeting");
+      const startsAt =
+        values.dateTime.toISOString() || new Date(Date.now()).toString();
+      const description = values.description || "Instant meeting";
+
+      await call.getOrCreate({
+        data: {
+          starts_at: startsAt,
+          custom: {
+            description,
+          },
+        },
+      });
+
+      setCallDetails(call);
+      if (!values.description) {
+        router.push(`/meeting/${call.id}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div>
@@ -154,14 +184,7 @@ const Hero = () => {
             buttonText="Click to Copy Link"
           />
         )}
-        {/* <Modal
-        isOpen={meetingState === "isScheduleMeeting"}
-        onClose={() => setMeetingState(undefined)}
-        title="Create Meeting"
-        className="text-center"
-        buttonText="Start Meeting"
-        handleClick={createMeeting}
-      /> */}
+        
         <Modal
           isOpen={meetingState === "isJoiningMeeting"}
           onClose={() => setMeetingState(undefined)}
