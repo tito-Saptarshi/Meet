@@ -57,7 +57,10 @@ const Hero = () => {
             <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900 max-sm:hidden">
               Video Call and Meetings for Everyone
             </h1>
-            <p className="mb-8 leading-relaxed max-sm:hidden">Meet 2.0: Enjoy superior video meetings with enhanced features and intuitive design, surpassing the old Google Meet experience.</p>
+            <p className="mb-8 leading-relaxed max-sm:hidden">
+              Meet 2.0: Enjoy superior video meetings with enhanced features and
+              intuitive design, surpassing the old Google Meet experience.
+            </p>
             <div className="flex flex-col md:flex-row justify-center gap-4">
               <Button
                 className="relative py-2 px-4 rounded-lg border border-blue-400 uppercase font-semibold tracking-wide text-blue-900 bg-transparent overflow-hidden transition duration-200 ease-in shadow-none hover:bg-blue-500 hover:shadow-lg hover:text-white"
@@ -105,6 +108,74 @@ const Hero = () => {
             />
           </div>
         </div>
+
+        {!callDetails ? (
+          <Modal
+            isOpen={meetingState === "isScheduleMeeting"}
+            onClose={() => setMeetingState(undefined)}
+            title="Schedule Meeting"
+            handleClick={createMeeting}
+          >
+            <div className="flex flex-col gap-2.5">
+              <label className="text-xl pl-2">Title</label>
+              <Textarea
+                className="border-slate-500 bg-slate-200"
+                onChange={(e) =>
+                  setValues({ ...values, description: e.target.value })
+                }
+              />
+            </div>
+            <div className="flex w-full flex-col gap-2.5">
+              <label className="text-base text-normal leading-[22px] text-sky-2">
+                Schedule Date and Time
+              </label>
+              <ReactDatePicker
+                selected={values.dateTime}
+                onChange={(date) => setValues({ ...values, dateTime: date! })}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={10}
+                timeCaption="time"
+                dateFormat="MMMM d, yyyy h:mm aa"
+                className="w-full rounded bg-slate-200 p-2"
+              />
+            </div>
+          </Modal>
+        ) : (
+          <Modal
+            isOpen={meetingState === "isScheduleMeeting"}
+            onClose={() => setMeetingState(undefined)}
+            title="Meeting Scheduled Successfully"
+            description="Refresh page to Schedule Another Meeting"
+            className="text-center"
+            handleClick={() => {
+              navigator.clipboard.writeText(meetingLink);
+            }}
+            buttonText="Click to Copy Link"
+          />
+        )}
+        {/* <Modal
+        isOpen={meetingState === "isScheduleMeeting"}
+        onClose={() => setMeetingState(undefined)}
+        title="Create Meeting"
+        className="text-center"
+        buttonText="Start Meeting"
+        handleClick={createMeeting}
+      /> */}
+        <Modal
+          isOpen={meetingState === "isJoiningMeeting"}
+          onClose={() => setMeetingState(undefined)}
+          title="Paste Meeting Link"
+          className="text-center"
+          buttonText="Join Meeting"
+          handleClick={() => router.push(values.link)}
+        >
+          <Input
+            placeholder="Paste Meeting Link"
+            onChange={(e) => setValues({ ...values, link: e.target.value })}
+            className="border-slate-700 bg-slate-200"
+          />
+        </Modal>
       </section>
     </div>
   );
