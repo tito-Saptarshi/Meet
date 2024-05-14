@@ -19,7 +19,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ClerkProvider>
+      <ClerkProvider
+        appearance={{
+          layout: {
+            logoLinkUrl: "Meet 2.0"
+          },
+        }}
+      >
         <body className={inter.className}>{children}</body>
       </ClerkProvider>
     </html>
